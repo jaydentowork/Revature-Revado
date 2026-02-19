@@ -23,20 +23,20 @@ public class JwtUtils {
 
     //This run automatically once the class is created and values are injected
     @PostConstruct
-    public void init(){
+    public void init() {
         this.key = Keys.hmacShaKeyFor(secretKey.getBytes(StandardCharsets.UTF_8));
     }
 
-    public String generateJwtToken(UUID userId, String username){
+    public String generateJwtToken(UUID userId, String username) {
         return Jwts.builder().subject(userId.toString())
-                .claim("username",username)
+                .claim("username", username)
                 .issuedAt(new Date())
                 .expiration(new Date(System.currentTimeMillis() + jwtExpiration))
                 .signWith(key, Jwts.SIG.HS256)
                 .compact();
     }
 
-    public String extractId(String token){
+    public String extractId(String token) {
         return Jwts.parser()
                 .verifyWith(key)
                 .build()
@@ -45,7 +45,7 @@ public class JwtUtils {
                 .getSubject();
     }
 
-    public String extractUsername(String token){
+    public String extractUsername(String token) {
         return Jwts.parser()
                 .verifyWith(key)
                 .build()

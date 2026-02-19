@@ -15,18 +15,18 @@ public class SubtaskService {
     private final TodoRepository todoRepository;
     private final SubtaskRepository subtaskRepository;
 
-    public SubtaskService(TodoRepository todoRepository, SubtaskRepository subtaskRepository){
+    public SubtaskService(TodoRepository todoRepository, SubtaskRepository subtaskRepository) {
         this.todoRepository = todoRepository;
         this.subtaskRepository = subtaskRepository;
     }
 
-    public void createSubtask(Subtask subtask, UUID todoid){
+    public void createSubtask(Subtask subtask, UUID todoid) {
         Todo todo = todoRepository.findById(todoid).orElseThrow(() -> new RuntimeException("No todo found with that id"));
         subtask.setTodo(todo);
         subtaskRepository.save(subtask);
     }
 
-    public List<Subtask> findSubtasksById(UUID todoid){
+    public List<Subtask> findSubtasksById(UUID todoid) {
         return subtaskRepository.findAllByTodoId(todoid);
     }
 

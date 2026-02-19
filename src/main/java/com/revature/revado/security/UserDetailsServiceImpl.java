@@ -12,11 +12,12 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 
     private final UserRepository userRepository;
 
-    public UserDetailsServiceImpl(UserRepository userRepository){
+    public UserDetailsServiceImpl(UserRepository userRepository) {
         this.userRepository = userRepository;
     }
+
     @Override
-    public UserDetails loadUserByUsername(String username){
+    public UserDetails loadUserByUsername(String username) {
         com.revature.revado.models.User user = userRepository.findByUsername(username).orElseThrow(() -> new RuntimeException("Username is not found."));
         return User.withUsername(user.getUsername()).password(user.getPassword()).authorities("USER").build();
     }

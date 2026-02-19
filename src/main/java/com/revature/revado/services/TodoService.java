@@ -4,7 +4,6 @@ import com.revature.revado.models.Todo;
 import com.revature.revado.models.User;
 import com.revature.revado.repositories.TodoRepository;
 import com.revature.revado.repositories.UserRepository;
-import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -16,7 +15,7 @@ public class TodoService {
     private final TodoRepository todoRepository;
     private final UserRepository userRepository;
 
-    public TodoService(TodoRepository todoRepository, UserRepository userRepostiroy){
+    public TodoService(TodoRepository todoRepository, UserRepository userRepostiroy) {
         this.todoRepository = todoRepository;
         this.userRepository = userRepostiroy;
     }
@@ -27,7 +26,7 @@ public class TodoService {
         todoRepository.save(todo);
     }
 
-    public List<Todo> fetchTodoByUser(UUID userId){
-       return todoRepository.findByUserId(userId);
+    public List<Todo> fetchTodoByUser(UUID userId) {
+        return todoRepository.findByUserId(userId);
     }
 }

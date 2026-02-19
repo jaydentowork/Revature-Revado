@@ -16,19 +16,16 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Todo {
+    @OneToMany(mappedBy = "todo", cascade = CascadeType.ALL, orphanRemoval = true)
+    List<Subtask> subtaskList = new ArrayList<>();
     @Id
     @GeneratedValue
     private UUID id;
-
     private String title;
     private String description;
     private boolean completed;
-
     @ManyToOne
-    @JoinColumn(name ="user_id")
+    @JoinColumn(name = "user_id")
     private User user;
-
-    @OneToMany(mappedBy = "todo", cascade = CascadeType.ALL, orphanRemoval = true)
-    List<Subtask> subtaskList = new ArrayList<>();
 
 }

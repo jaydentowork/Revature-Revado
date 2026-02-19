@@ -18,7 +18,7 @@ public class AuthService {
     private final AuthenticationManager authenticationManager;
     private final JwtUtils jwtUtils;
 
-    public AuthService(UserRepository userRepository, PasswordEncoder passwordEncoder, AuthenticationManager authenticationManager, JwtUtils jwtUtils){
+    public AuthService(UserRepository userRepository, PasswordEncoder passwordEncoder, AuthenticationManager authenticationManager, JwtUtils jwtUtils) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.authenticationManager = authenticationManager;
@@ -28,8 +28,8 @@ public class AuthService {
     //1. Check if username is taken
     //2. Hash password
     //3. Save user to database
-    public User register(User user){
-        if(userRepository.findByUsername(user.getUsername()).isPresent()){
+    public User register(User user) {
+        if (userRepository.findByUsername(user.getUsername()).isPresent()) {
             throw new RuntimeException("Username already taken");
         }
         String hashedPassword = passwordEncoder.encode(user.getPassword());
@@ -39,14 +39,14 @@ public class AuthService {
 
     //1. Authenticate using the authetication manager
     //2. Generate and return the jwt token
-    public String login(String username, String password){
+    public String login(String username, String password) {
         // 1. Hand the credentials to the Manager
         Authentication authentication = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(username,password));
+                new UsernamePasswordAuthenticationToken(username, password));
         // 2. Set the Security context
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
         User user = userRepository.findByUsername(username).orElseThrow(() -> new RuntimeException("User not found"));
-        return jwtUtils.generateJwtToken(user.getId(),user.getUsername());
+        return jwtUtils.generateJwtToken(user.getId(), user.getUsername());
     }
 }

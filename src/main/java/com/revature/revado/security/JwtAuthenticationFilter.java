@@ -16,7 +16,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private final JwtUtils jwtUtils;
     private final UserDetailsServiceImpl userDetailsService;
 
-    public JwtAuthenticationFilter(JwtUtils jwtUtils, UserDetailsServiceImpl userDetailsService){
+    public JwtAuthenticationFilter(JwtUtils jwtUtils, UserDetailsServiceImpl userDetailsService) {
         this.jwtUtils = jwtUtils;
         this.userDetailsService = userDetailsService;
     }
@@ -29,18 +29,18 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         String authHeader = request.getHeader("Authorization");
 
         //2. Check if it's a "Bearer" token
-        if(authHeader != null && authHeader.startsWith("Bearer ")){
+        if (authHeader != null && authHeader.startsWith("Bearer ")) {
             String token = authHeader.substring(7);
 
-            try{
+            try {
                 String username = jwtUtils.extractUsername(token);
 
                 //Check if the username is valid and the user is not already authenticated in the current session
-                if(username != null && SecurityContextHolder.getContext().getAuthentication() == null){
+                if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
                     UserDetails userDetails = userDetailsService.loadUserByUsername(username);
 
                     //Package the user information passing the (userdetails, null for password because we trust the jwt token, the user role)
-                    UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(userDetails,null,userDetails.getAuthorities());
+                    UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
 
                     //Capture the request information such as IP address and the session id
                     authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
@@ -48,7 +48,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                     //Take the authToken we just built and saves it into the security context.
                     SecurityContextHolder.getContext().setAuthentication(authToken);
                 }
-            }catch(Exception e){
+            } catch (Exception e) {
                 logger.error("Could not set user authentication ", e);
             }
         }
