@@ -1,5 +1,6 @@
 package com.revature.revado.security;
 
+import jakarta.annotation.Nonnull;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -22,19 +23,17 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     }
 
     @Override
-    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
+    protected void doFilterInternal(HttpServletRequest request, @Nonnull HttpServletResponse response, @Nonnull FilterChain filterChain)
             throws jakarta.servlet.ServletException, java.io.IOException {
 
         //1. Extract the jwt token from header
         String authHeader = request.getHeader("Authorization");
-
+        String token;
         //2. Check if it's a "Bearer" token
         if (authHeader != null && authHeader.startsWith("Bearer ")) {
-            String token = authHeader.substring(7);
-
+            token = authHeader.substring(7);
             try {
                 String username = jwtUtils.extractUsername(token);
-
                 //Check if the username is valid and the user is not already authenticated in the current session
                 if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
                     UserDetails userDetails = userDetailsService.loadUserByUsername(username);

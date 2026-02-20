@@ -1,9 +1,11 @@
 package com.revature.revado.security;
 
+import com.revature.revado.models.User;
 import com.revature.revado.repositories.UserRepository;
-import org.springframework.security.core.userdetails.User;
+import jakarta.annotation.Nonnull;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 //This class is for user look up, once a user send there username/password, we will bind them to a User of spring security.
@@ -17,9 +19,8 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     }
 
     @Override
-    public UserDetails loadUserByUsername(String username) {
-        com.revature.revado.models.User user = userRepository.findByUsername(username).orElseThrow(() -> new RuntimeException("Username is not found."));
-        return User.withUsername(user.getUsername()).password(user.getPassword()).authorities("USER").build();
+    public @Nonnull UserDetails loadUserByUsername(@Nonnull String username) throws UsernameNotFoundException {
+        User user = userRepository.findByUsername(username).orElseThrow(() -> new RuntimeException("Username is not found."));
+        return new UserPrincipal(user);
     }
-
 }

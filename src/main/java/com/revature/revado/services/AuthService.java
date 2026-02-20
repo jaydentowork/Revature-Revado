@@ -37,7 +37,7 @@ public class AuthService {
         return userRepository.save(user);
     }
 
-    //1. Authenticate using the authetication manager
+    //1. Authenticate using the authentication manager
     //2. Generate and return the jwt token
     public String login(String username, String password) {
         // 1. Hand the credentials to the Manager
