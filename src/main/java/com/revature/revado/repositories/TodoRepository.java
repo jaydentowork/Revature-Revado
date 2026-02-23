@@ -9,7 +9,7 @@ import java.util.UUID;
 public interface TodoRepository extends JpaRepository<Todo, UUID> {
 
     List<Todo> findByUserId(UUID userId);
-
+    Todo findByUserIdAndId(UUID userId,UUID id);
     List<Todo> findByUserIdAndCompleted(UUID userId, boolean completed);
 
 }

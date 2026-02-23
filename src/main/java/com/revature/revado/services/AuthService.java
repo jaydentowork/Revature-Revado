@@ -1,5 +1,6 @@
 package com.revature.revado.services;
 
+import com.revature.revado.exceptions.ResourceNotFoundException;
 import com.revature.revado.models.User;
 import com.revature.revado.repositories.UserRepository;
 import com.revature.revado.security.JwtUtils;
@@ -9,6 +10,9 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import static com.revature.revado.constants.ErrorMessages.LOGIN_FAILED;
+import static com.revature.revado.constants.ErrorMessages.TAKEN_USERNAME;
 
 @Service
 public class AuthService {
@@ -30,7 +34,7 @@ public class AuthService {
     //3. Save user to database
     public User register(User user) {
         if (userRepository.findByUsername(user.getUsername()).isPresent()) {
-            throw new RuntimeException("Username already taken");
+            throw new RuntimeException(TAKEN_USERNAME);
         }
         String hashedPassword = passwordEncoder.encode(user.getPassword());
         user.setPassword(hashedPassword);
@@ -46,7 +50,7 @@ public class AuthService {
         // 2. Set the Security context
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
-        User user = userRepository.findByUsername(username).orElseThrow(() -> new RuntimeException("User not found"));
+        User user = userRepository.findByUsername(username).orElseThrow(() -> new ResourceNotFoundException(LOGIN_FAILED));
         return jwtUtils.generateJwtToken(user.getId(), user.getUsername());
     }
 }

@@ -2,6 +2,7 @@ package com.revature.revado.controllers;
 
 import com.revature.revado.models.Todo;
 import com.revature.revado.services.TodoService;
+import jakarta.websocket.server.PathParam;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -25,10 +26,22 @@ public class TodoController {
         return ResponseEntity.ok(todoList);
     }
 
+    @GetMapping("/get/{id}")
+    public ResponseEntity<Todo> getById(@PathVariable UUID id) {
+        Todo todo = todoService.getTodoById(id);
+        return ResponseEntity.ok(todo);
+    }
+
     @PostMapping("/create")
     public ResponseEntity<Todo> create(@RequestBody Todo todo) {
         todoService.createTodo(todo);
         return ResponseEntity.ok(todo);
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> delete(@PathVariable(required = true) UUID id) {
+        todoService.deleteTodo(id);
+        return ResponseEntity.noContent().build();
     }
 
     @PutMapping("/{id}")
