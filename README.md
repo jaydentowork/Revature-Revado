@@ -16,7 +16,9 @@ A RESTful Todo application built with Spring Boot and secured with JWT authentic
 - JWT-based authentication
 - Create, read, update, and delete todos
 - Filter todos by completion status
-
+- Create subtasks for todo manually or with LLM
+  - Ingrate openrouter for LLM generation, define api key and model type in application.properties
+- Swagger UI for viewing schema and endpoints: http://localhost:8080/swagger-ui/index.html#/
 ## Getting Started
 
 ### Prerequisites

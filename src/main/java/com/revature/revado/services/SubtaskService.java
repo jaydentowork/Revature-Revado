@@ -19,10 +19,12 @@ public class SubtaskService {
 
     private final TodoRepository todoRepository;
     private final SubtaskRepository subtaskRepository;
+    private final AiService aiService;
 
-    public SubtaskService(TodoRepository todoRepository, SubtaskRepository subtaskRepository) {
+    public SubtaskService(TodoRepository todoRepository, SubtaskRepository subtaskRepository, AiService aiService) {
         this.todoRepository = todoRepository;
         this.subtaskRepository = subtaskRepository;
+        this.aiService = aiService;
     }
 
     public void createSubtask(UUID todoId, Subtask subtask) {
@@ -68,5 +70,27 @@ public class SubtaskService {
         return subtaskRepository.findAllByTodoId(todoId);
     }
 
+    public List<Subtask> generateAndSaveAiSubtasks(UUID todoId){
+        Todo todo = todoRepository.findById(todoId).orElseThrow(() -> new ResourceNotFoundException(TODO_NOT_FOUND));
+
+        UUID todoOwnerId = SecurityUtils.getCurrentUserId();
+        if (!todo.getUser().getId().equals(todoOwnerId)) {
+            throw new UnauthorizedAccessException(TODO_OWNERSHIP_REQUIRED);
+        }
+
+        // 1. Call services to generate the subtasks
+        List<String> generatedSubtasks = aiService.generateSubtasks(todo.getTitle(),todo.getDescription());
+
+        // 2. Map and create each subtask base on the String list
+        List<Subtask> newSubtasksList = generatedSubtasks.stream().map(title -> {
+            Subtask newSubtask = new Subtask();
+            newSubtask.setTitle(title);
+            newSubtask.setCompleted(false);
+            newSubtask.setTodo(todo);
+            return subtaskRepository.save(newSubtask);
+        }).toList();
+        return newSubtasksList;
+
+    }
 
 }

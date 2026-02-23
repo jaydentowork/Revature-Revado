@@ -31,6 +31,12 @@ public class SubtaskController {
         return ResponseEntity.ok(subtask);
     }
 
+    @PostMapping("/create-with-ai/{todoId}")
+    public ResponseEntity<List<Subtask>> createSubtaskWithAI(@PathVariable UUID todoId){
+        List<Subtask> subtaskList = subtaskService.generateAndSaveAiSubtasks(todoId);
+        return ResponseEntity.ok(subtaskList);
+    }
+
     @PutMapping("/{id}")
     public ResponseEntity<Subtask> updateSubtask(@PathVariable UUID id, @RequestBody Subtask subtask){
         subtask.setId(id);
